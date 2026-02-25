@@ -43,14 +43,14 @@ if teams.size < 2
   exit 1
 end
 
+
 puts "Команд: #{teams.size}"
 
 # создаем все возможные пары
-matches = []
-teams.combination(2).each do |t1, t2|
-  matches << {t1: t1[:name], t2: t2[:name], c1: t1[:city], c2: t2[:city]}
+matches = teams.combination(2).map do |t1, t2|
+  {t1: t1[:name], t2: t2[:name], c1: t1[:city], c2: t2[:city]}
 end
-
+matches.shuffle!
 puts "Матчей: #{matches.size}"
 
 # собираем все пятницы, субботы и воскресенья в нашем диапазоне
@@ -61,20 +61,22 @@ times = ['12:00', '15:00', '18:00']
 
 # составляем расписание
 schedule = []
+
 matches_cop = matches.dup # копируем
 
 max_games_in_day = 2
-
 play_days.each do |date|
-  break if matches_cop.empty?
-
   games_today = []
-  times.first(max_games_in_day).each do |time|
+
+times.each do |time|
+  max_games_in_day.times do
     break if matches_cop.empty?
+      
     games_today << { time: time, **matches_cop.shift }
   end
-
-  schedule << { date: date, games: games_today } unless games_today.empty?
+  break if matches_cop.empty?
+end
+schedule << { date: date, games: games_today} unless games_today.empty?
 end
 
 # проверяем оставшиеся матчи
