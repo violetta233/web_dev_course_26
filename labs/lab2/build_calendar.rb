@@ -64,12 +64,12 @@ schedule = []
 
 matches_cop = matches.dup # копируем
 
-max_games_in_day = 2
+max_games = 2
 play_days.each do |date|
   games_today = []
 
 times.each do |time|
-  max_games_in_day.times do
+  max_games.times do
     break if matches_cop.empty?
       
     games_today << { time: time, **matches_cop.shift }
